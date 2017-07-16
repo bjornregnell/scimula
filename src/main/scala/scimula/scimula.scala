@@ -1,26 +1,22 @@
 package scimula
 
 case class Time(time: Double) extends AnyVal{  // Pseudo timestamp or duration
-  def +(d: Time): Time = Time(time + d.time)
+  def +(delta: Time): Time = Time(time + delta.time)
 }
 
-trait Message
-case class Text(msg: String) extends Message
-case object EmptyMessage     extends Message
+trait EventType
+case class Message(msg: String) extends EventType
+case object Untyped             extends EventType
 
-case class Event(msg: Message, time: Time, handler: Processor, issuer: Processor)
-
-object Event {
-  val timeOrdering = Ordering.fromLessThan[Event]((e1, e2) => e1.time.time > e2.time.time)
-}
+case class Event(tpe: EventType, time: Time, handler: Processor, issuer: Processor)
 
 trait Processor { def process: PartialFunction[Event, Unit] }
 case object NoProcess extends Processor { def process = { case _ => } }
 
 class Simulation {
-  val eventQueue = collection.mutable.PriorityQueue.empty[Event](Event.timeOrdering)
-
-  val log = collection.mutable.ListBuffer.empty[Any]
+  val eventQueue = collection.mutable.PriorityQueue.empty[Event](
+    Ordering.fromLessThan[Event]((e1, e2) => e1.time.time > e2.time.time)
+  )
 
   var current = Time(0.0)
 

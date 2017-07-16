@@ -1,9 +1,9 @@
 import scimula._
 
 class MM1(val lambda: Double, val mu: Double) {
-  case object Generate extends Message
-  case object NewJob   extends Message
-  case object JobDone  extends Message
+  case object Generate extends EventType
+  case object NewJob   extends EventType
+  case object JobDone  extends EventType
 
   def interarrivalTime = Time(RNG.negExp(lambda))
   def serviceTime      = Time(RNG.negExp(mu))
