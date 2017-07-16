@@ -5,8 +5,8 @@ class MM1(val lambda: Double, val mu: Double) {
   case object NewJob   extends Message
   case object JobDone  extends Message
 
-  def interarrivalTime = RNG.negExpTime(Time(lambda))
-  def serviceTime      = RNG.negExpTime(Time(mu))
+  def interarrivalTime = Time(RNG.negExp(lambda))
+  def serviceTime      = Time(RNG.negExp(mu))
 
   val sim = new Simulation
 
