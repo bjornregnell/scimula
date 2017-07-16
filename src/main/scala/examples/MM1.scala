@@ -10,7 +10,7 @@ class MM1(val lambda: Double, val mu: Double) {
 
   val sim = new Simulation
 
-  lazy val jobGenerator = new Processor {
+  val jobGenerator = new Processor {
     def process = {
       case Event(Generate, now, me, _) =>
         println(s"Generator activated at $now.")
@@ -19,7 +19,7 @@ class MM1(val lambda: Double, val mu: Double) {
       }
   }
 
-  lazy val theServer = new Processor {
+  val theServer = new Processor {
     var nbrOfJobsInQ = 0
 
     def process = {
