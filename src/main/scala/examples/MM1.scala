@@ -1,12 +1,12 @@
 import scimula._
 
-object MM1 {
+class MM1(val lambda: Double, val mu: Double) {
   case object Generate extends Message
   case object NewJob   extends Message
   case object JobDone  extends Message
 
-  def interarrivalTime = RNG.negExpTime(Time(15.0))
-  def serviceTime      = RNG.negExpTime(Time(10.0))
+  def interarrivalTime = RNG.negExpTime(Time(lambda))
+  def serviceTime      = RNG.negExpTime(Time(mu))
 
   val sim = new Simulation
 
@@ -41,7 +41,4 @@ object MM1 {
     sim init Event(Generate, Time(0.0), handler = jobGenerator, issuer = NoProcess)
     sim simulateUntil Time(100.0)
   }
-
-  def main(args: Array[String]): Unit = simulate
-
 }
