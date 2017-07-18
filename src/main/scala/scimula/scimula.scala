@@ -1,19 +1,23 @@
 package scimula
 
-case class Time(time: Double) extends AnyVal{  // Pseudo timestamp or duration
+case class Event(
+  tag: Tag           = NoTag,
+  time: Time         = Time(0.0),
+  handler: Processor = Empty,
+  issuer: Processor  = Empty)
+
+case class Time(time: Double) extends AnyVal{  
   def +(delta: Time): Time = Time(time + delta.time)
 }
 
-trait EventType
-case class Message(msg: String) extends EventType
-case object Untyped             extends EventType
-
-case class Event(tpe: EventType, time: Time, handler: Processor, issuer: Processor)
+trait Tag
+case class Message(msg: String) extends Tag
+case object NoTag               extends Tag
 
 trait Processor { def process: PartialFunction[Event, Unit] }
-case object NoProcess extends Processor { def process = { case _ => } }
+case object Empty extends Processor { def process = { case _ => } }
 
-class Simulation {
+class ExecutionContext {
   val eventQueue = collection.mutable.PriorityQueue.empty[Event](
     Ordering.fromLessThan[Event]((e1, e2) => e1.time.time > e2.time.time)
   )
@@ -24,12 +28,14 @@ class Simulation {
     if (e.time.time >= current.time) eventQueue.enqueue(e)
     else throw new IllegalArgumentException
 
-  def simulateUntil(endOf: Time): Unit =
-    while (current.time < endOf.time && eventQueue.size > 0) {
-      val event = eventQueue.dequeue
-      current = event.time
-      event.handler.process(event)
-    }
+  def executeNext(): Unit = {
+    val event = eventQueue.dequeue
+    current = event.time
+    event.handler.process(event)
+  }
+
+  def executeUntil(endOf: Time): Unit =
+    while (current.time < endOf.time && eventQueue.size > 0) executeNext()
 
   def init(initEvent: Event): Unit = {
     eventQueue.clear()
