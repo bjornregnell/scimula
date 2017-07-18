@@ -6,7 +6,7 @@ case class Event(
   handler: Processor = Empty,
   issuer: Processor  = Empty)
 
-case class Time(time: Double) extends AnyVal{  
+case class Time(time: Double) extends AnyVal{
   def +(delta: Time): Time = Time(time + delta.time)
 }
 
@@ -26,7 +26,7 @@ class ExecutionContext {
 
   def add(e: Event): Unit =
     if (e.time.time >= current.time) eventQueue.enqueue(e)
-    else throw new IllegalArgumentException
+    else throw new IllegalArgumentException(s"event before current.time: $e")
 
   def executeNext(): Unit = {
     val event = eventQueue.dequeue
