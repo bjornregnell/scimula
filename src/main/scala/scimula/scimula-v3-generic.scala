@@ -34,14 +34,14 @@ class Executor[A] {
     if (e.at.time >= current.time) eventQueue.enqueue(e)  // should this be checked???
     else throw new IllegalArgumentException(s"event before current.time: $e")
 
-  def dispatchNextEvent(): Unit = {
+  def dispatchNext(): Unit = {
     val event = eventQueue.dequeue
     current = event.at
     event.handler.handle(event)
   }
 
   def until(endOf: Time): Unit =
-    while (current.time < endOf.time && hasNext) dispatchNextEvent()
+    while (current.time < endOf.time && hasNext) dispatchNext()
 
   def reset(): Unit = {
     eventQueue.clear()
