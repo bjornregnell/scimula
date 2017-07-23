@@ -1,4 +1,7 @@
+package examples.v1
+
 import scimula._
+import v1._
 
 class MM1(val lambda: Double, val mu: Double) {
   case object Generate extends Tag

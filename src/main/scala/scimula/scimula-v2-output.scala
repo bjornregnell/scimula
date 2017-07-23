@@ -1,4 +1,5 @@
 package scimula.v2
+// no generics, explicit base type Tag, with processor result stored in output
 
 case class Event(
   tag: Tag  = NoTag,
